@@ -19,8 +19,8 @@ namespace uart
 
     enum class Type
     {
-        On,
-        Off,
+        ON,
+        OFF,
         R,
         G,
         B,

@@ -64,12 +64,12 @@ void setup()
   uartHandler.init(uartConfig::rxPin, uartConfig::txPin);
   uartHandler.setCallback(&onEspCommand);
 
-  if (xTaskCreate(uartHandler.checkMessagesTask, "Check messages", 2048, NULL, 3, NULL) != pdPASS)
+  if (xTaskCreate(uartHandler.checkMessagesTask, "Check messages", 256, &uartHandler, 3, NULL) != pdPASS)
   {
     abort();
   };
 
-  if (xTaskCreate(uartHandler.sendMessagesTask, "Send messages", 2048, NULL, 3, NULL) != pdPASS)
+  if (xTaskCreate(uartHandler.sendMessagesTask, "Send messages", 256, &uartHandler, 3, NULL) != pdPASS)
   {
     abort();
   }

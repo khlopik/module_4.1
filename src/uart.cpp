@@ -105,11 +105,11 @@ namespace uart
                 const char *stringType;
                 switch (command.type)
                 {
-                case Type::On:
-                    stringType = "On";
+                case Type::ON:
+                    stringType = "ON";
                     break;
-                case Type::Off:
-                    stringType = "Off";
+                case Type::OFF:
+                    stringType = "OFF";
                     break;
                 case Type::R:
                     stringType = "R";
@@ -120,6 +120,7 @@ namespace uart
                 case Type::B:
                     stringType = "B";
                     break;
+                case Type::Unknown:
                 default:
                     stringType = "Unknown";
                     break;
@@ -128,7 +129,18 @@ namespace uart
                               stringType,
                               command.value);
 
-                vTaskDelay(pdMS_TO_TICKS(10));
+                if (command.type == Type::Unknown)
+                {
+                    continue;
+                }
+
+                char txBuffer[16];
+                int len = snprintf(txBuffer, sizeof(txBuffer), "%s:%u\n", stringType, command.value);
+
+                if (len > 0 && len < static_cast<int>(sizeof(txBuffer)) && SerialVCP_)
+                {
+                    SerialVCP_->write(reinterpret_cast<const uint8_t *>(txBuffer), len);
+                }
             }
         }
     }

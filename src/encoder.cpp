@@ -54,11 +54,21 @@ namespace encoder
 
     long Encoder::getPosition()
     {
+        if (!rotaryEncoder_)
+        {
+            return 0;
+        }
+
         return rotaryEncoder_->getPosition();
     }
 
     void Encoder::resetPosition()
     {
+        if (!rotaryEncoder_)
+        {
+            return;
+        }
+
         rotaryEncoder_->setPosition(0);
     }
 

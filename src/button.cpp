@@ -12,6 +12,11 @@ namespace button
 
     void ButtonHandler::setCallback(EventCallback cb)
     {
+        if (!button_)
+        {
+            return;
+        }
+
         callback_ = cb;
         button_->onPressed(callback_);
     }

@@ -9,6 +9,7 @@ namespace led
         pinMode(greenPin, OUTPUT);
         pinMode(bluePin, OUTPUT);
         pinMode(LED_BUILTIN, OUTPUT);
+        turnOffBuiltInLed();
     }
 
     Color LedHandler::getCurrentColor()
@@ -34,11 +35,11 @@ namespace led
 
     void LedHandler::turnOnBuiltInLed()
     {
-        digitalWrite(LED_BUILTIN, buildInLedActiveLevel_);
+        digitalWrite(LED_BUILTIN, builtInLedActiveLevel_);
     }
 
     void LedHandler::turnOffBuiltInLed()
     {
-        digitalWrite(LED_BUILTIN, buildInLedInactiveLevel_);
+        digitalWrite(LED_BUILTIN, builtInLedInactiveLevel_);
     }
 } // namespace led

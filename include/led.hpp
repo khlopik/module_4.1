@@ -23,7 +23,7 @@ namespace led
 
     private:
         Color selectedColor_ = Color::Red;
-        int buildInLedActiveLevel_ = LOW;
-        int buildInLedInactiveLevel_ = HIGH;
+        int builtInLedActiveLevel_ = LOW;
+        int builtInLedInactiveLevel_ = HIGH;
     };
 } // namespace led
