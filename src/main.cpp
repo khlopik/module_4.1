@@ -51,8 +51,18 @@ namespace
       break;
     }
 
-    commandToSend.value = (value == 0) ? 0 : (value * 16 - 1);
+    const uint8_t scaledValue = (value == 0) ? 0 : (value * 16 - 1);
+    ledHandler.setValue(scaledValue);
+    commandToSend.value = scaledValue;
     uartHandler.sendCommandToQueue(commandToSend);
+  }
+
+  void onButtonClick()
+  {
+    ledHandler.switchColor();
+    const uint8_t newPosition = (ledHandler.getCurrentValue() + 1) / 16;
+    Serial.printf("New position: %d\n", newPosition);
+    encoderHandler.setPosition(newPosition);
   }
 
   void onBuiltInButtonClick()
@@ -90,11 +100,12 @@ void setup()
   uartHandler.setCallback(&onEspCommand);
   ledHandler.init(ledConfig::pinRed, ledConfig::pinGreen, ledConfig::pinBlue);
   buttonHandler.init(buttonConfig::pin);
-  buttonHandler.setCallback([]()
-                            { ledHandler.switchColor(); });
-  buttonHandler.setCallbackToBuiltInButton(onBuiltInButtonClick);
+  buttonHandler.setCallback(&onButtonClick);
+  buttonHandler.setCallbackToBuiltInButton(&onBuiltInButtonClick);
   encoderHandler.init(encoderConfig::clkPin, encoderConfig::dtPin);
   encoderHandler.setCallback(&onEncoderUpdate);
+  const uint8_t currentPosition = (ledHandler.getCurrentValue() + 1) / 16;
+  encoderHandler.setPosition(currentPosition);
 
   if (xTaskCreate(uartHandler.checkMessagesTask, "Check messages", 256, &uartHandler, 3, NULL) != pdPASS)
   {

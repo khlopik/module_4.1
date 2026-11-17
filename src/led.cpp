@@ -21,6 +21,39 @@ namespace led
         return selectedColor_;
     }
 
+    uint8_t LedHandler::getCurrentValue() const
+    {
+        switch (selectedColor_)
+        {
+        case Color::Red:
+            return redValue_;
+        case Color::Green:
+            return greenValue_;
+        case Color::Blue:
+            return blueValue_;
+        default:
+            return 0;
+            break;
+        }
+    }
+
+    void LedHandler::setValue(uint8_t value)
+    {
+        switch (selectedColor_)
+        {
+        case Color::Red:
+            redValue_ = value;
+            break;
+        case Color::Green:
+            greenValue_ = value;
+            break;
+        case Color::Blue:
+            blueValue_ = value;
+        default:
+            break;
+        }
+    }
+
     void LedHandler::switchColor()
     {
         Serial.println("== LED: switchColor() ==");

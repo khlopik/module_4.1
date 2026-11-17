@@ -32,6 +32,7 @@ namespace uart
 
     RxCommand UartHandler::parseCommand(const char *str)
     {
+        Serial.printf("parseCommand: %s\n", str);
         if (strcmp(str, "PRESS") == 0)
         {
             return RxCommand::ButtonPress;
@@ -64,6 +65,7 @@ namespace uart
                 if (receivedChar == '\n')
                 {
                     buffer_[bufIndex_] = '\0';
+                    Serial.printf("bufIndex: %d\n", bufIndex_);
 
                     if (bufIndex_ > 0)
                     {

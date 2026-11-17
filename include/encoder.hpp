@@ -13,7 +13,7 @@ namespace encoder
         void init(uint8_t clkPin, uint8_t dtPin);
         void update();
         long getPosition();
-        void resetPosition();
+        void setPosition(uint8_t position);
         void setCallback(EventCallback cb);
 
     private:

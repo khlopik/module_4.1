@@ -69,14 +69,15 @@ namespace encoder
         return rotaryEncoder_->getPosition();
     }
 
-    void Encoder::resetPosition()
+    void Encoder::setPosition(uint8_t position)
     {
         if (!rotaryEncoder_)
         {
             return;
         }
 
-        rotaryEncoder_->setPosition(0);
+        currentPosition_ = position;
+        rotaryEncoder_->setPosition(position);
     }
 
     void Encoder::setCallback(EventCallback cb)
