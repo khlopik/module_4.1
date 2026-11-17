@@ -16,9 +16,11 @@ namespace button
     {
         if (!button_)
         {
+            Serial.println("== BUTTON: No button_ initialized ==");
             return;
         }
 
+        Serial.println("== BUTTON: setCallback() ==");
         callback_ = cb;
         button_->onPressed(callback_);
     }
@@ -27,9 +29,10 @@ namespace button
     {
         if (!builtInButton_)
         {
+            Serial.println("== BUTTON: No builtInButton_ initialized ==");
             return;
         }
-
+        Serial.println("== BUTTON: setCallbackToBuiltInButton() ==");
         callbackToBuiltIn_ = cb;
         builtInButton_->onPressed(callbackToBuiltIn_);
     }

@@ -51,7 +51,7 @@ namespace
       break;
     }
 
-    commandToSend.value = value;
+    commandToSend.value = (value == 0) ? 0 : (value * 16 - 1);
     uartHandler.sendCommandToQueue(commandToSend);
   }
 
@@ -74,8 +74,20 @@ namespace
   }
 }
 
+void inputTask(void *)
+{
+  while (true)
+  {
+    buttonHandler.update();
+    encoderHandler.update();
+    vTaskDelay(pdMS_TO_TICKS(5));
+  }
+}
+
 void setup()
 {
+  uartHandler.init(uartConfig::rxPin, uartConfig::txPin);
+  uartHandler.setCallback(&onEspCommand);
   ledHandler.init(ledConfig::pinRed, ledConfig::pinGreen, ledConfig::pinBlue);
   buttonHandler.init(buttonConfig::pin);
   buttonHandler.setCallback([]()
@@ -83,8 +95,6 @@ void setup()
   buttonHandler.setCallbackToBuiltInButton(onBuiltInButtonClick);
   encoderHandler.init(encoderConfig::clkPin, encoderConfig::dtPin);
   encoderHandler.setCallback(&onEncoderUpdate);
-  uartHandler.init(uartConfig::rxPin, uartConfig::txPin);
-  uartHandler.setCallback(&onEspCommand);
 
   if (xTaskCreate(uartHandler.checkMessagesTask, "Check messages", 256, &uartHandler, 3, NULL) != pdPASS)
   {
@@ -96,12 +106,14 @@ void setup()
     abort();
   }
 
+  if (xTaskCreate(inputTask, "Input", 256, NULL, 2, NULL) != pdPASS)
+  {
+    abort();
+  }
+
   vTaskStartScheduler();
 }
 
 void loop()
 {
-  buttonHandler.update();
-  encoderHandler.update();
-  vTaskDelay(pdMS_TO_TICKS(5));
 }

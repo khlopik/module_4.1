@@ -5,11 +5,15 @@ namespace led
 {
     void LedHandler::init(uint8_t redPin, uint8_t greenPin, uint8_t bluePin)
     {
+        redPin_ = redPin;
+        greenPin_ = greenPin;
+        bluePin_ = bluePin;
         pinMode(redPin, OUTPUT);
         pinMode(greenPin, OUTPUT);
         pinMode(bluePin, OUTPUT);
         pinMode(LED_BUILTIN, OUTPUT);
         turnOffBuiltInLed();
+        updateLeds();
     }
 
     Color LedHandler::getCurrentColor()
@@ -19,6 +23,7 @@ namespace led
 
     void LedHandler::switchColor()
     {
+        Serial.println("== LED: switchColor() ==");
         switch (selectedColor_)
         {
         case Color::Red:
@@ -31,6 +36,14 @@ namespace led
             selectedColor_ = Color::Red;
             break;
         }
+        updateLeds();
+    }
+
+    void LedHandler::updateLeds()
+    {
+        digitalWrite(redPin_, selectedColor_ == Color::Red);
+        digitalWrite(greenPin_, selectedColor_ == Color::Green);
+        digitalWrite(bluePin_, selectedColor_ == Color::Blue);
     }
 
     void LedHandler::turnOnBuiltInLed()

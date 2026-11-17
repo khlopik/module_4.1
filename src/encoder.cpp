@@ -5,7 +5,7 @@ namespace encoder
 {
     void Encoder::init(uint8_t clkPin, uint8_t dtPin)
     {
-        rotaryEncoder_.emplace(clkPin, dtPin, RotaryEncoder::LatchMode::FOUR3);
+        rotaryEncoder_.emplace(dtPin, clkPin, RotaryEncoder::LatchMode::FOUR3);
     }
     void Encoder::update()
     {
@@ -21,8 +21,10 @@ namespace encoder
             return;
         }
 
+        Serial.println("== ENCODER: update() ==");
         uint8_t position;
         const long newPosition = rotaryEncoder_->getPosition();
+        Serial.printf("New position: %ld\n", newPosition);
 
         if (newPosition < 0)
         {
@@ -39,14 +41,19 @@ namespace encoder
             position = static_cast<uint8_t>(newPosition);
         }
 
+        Serial.printf("position: %d\n", position);
+        Serial.printf("currentPosition: %d\n", currentPosition_);
+
         if (position != currentPosition_)
         {
             Serial.printf("%s | Position = %d\n",
                           position > currentPosition_ ? "CW (+)" : "CCW (-)",
                           position);
+            Serial.println("After loggin position");
             currentPosition_ = position;
             if (callback_ != nullptr)
             {
+                Serial.println("Running callback");
                 callback_(currentPosition_);
             }
         }

@@ -20,6 +20,6 @@ namespace encoder
         std::optional<RotaryEncoder> rotaryEncoder_;
         EventCallback callback_ = nullptr;
         uint8_t currentPosition_ = 0;
-        static constexpr uint8_t MAX_POSITION = 255;
+        static constexpr uint8_t MAX_POSITION = 16;
     };
 } // namespace encoder
