@@ -12,7 +12,8 @@ namespace ledConfig
 
 namespace buttonConfig
 {
-    constexpr uint8_t pin = PA0;
+    constexpr uint8_t pin = PA6;
+    constexpr uint8_t builtInPin = PA0;
 } // namespace buttonConfig
 
 namespace encoderConfig

@@ -30,17 +30,17 @@ namespace uart
         self->checkMessagesLoop();
     }
 
-    Command UartHandler::parseCommand(const char *str)
+    RxCommand UartHandler::parseCommand(const char *str)
     {
         if (strcmp(str, "PRESS") == 0)
         {
-            return Command::ButtonPress;
+            return RxCommand::ButtonPress;
         }
         if (strcmp(str, "RELEASE") == 0)
         {
-            return Command::ButtonRelease;
+            return RxCommand::ButtonRelease;
         }
-        return Command::Unknown;
+        return RxCommand::Unknown;
     }
 
     void UartHandler::checkMessagesLoop()
@@ -67,8 +67,8 @@ namespace uart
 
                     if (bufIndex_ > 0)
                     {
-                        Command cmd = parseCommand(buffer_);
-                        if (cmd != Command::Unknown && callback_ != nullptr)
+                        RxCommand cmd = parseCommand(buffer_);
+                        if (cmd != RxCommand::Unknown && callback_ != nullptr)
                         {
                             callback_(cmd);
                         }
@@ -105,22 +105,22 @@ namespace uart
                 const char *stringType;
                 switch (command.type)
                 {
-                case Type::ON:
+                case CommandType::ON:
                     stringType = "ON";
                     break;
-                case Type::OFF:
+                case CommandType::OFF:
                     stringType = "OFF";
                     break;
-                case Type::R:
+                case CommandType::R:
                     stringType = "R";
                     break;
-                case Type::G:
+                case CommandType::G:
                     stringType = "G";
                     break;
-                case Type::B:
+                case CommandType::B:
                     stringType = "B";
                     break;
-                case Type::Unknown:
+                case CommandType::Unknown:
                 default:
                     stringType = "Unknown";
                     break;
@@ -129,7 +129,7 @@ namespace uart
                               stringType,
                               command.value);
 
-                if (command.type == Type::Unknown)
+                if (command.type == CommandType::Unknown)
                 {
                     continue;
                 }

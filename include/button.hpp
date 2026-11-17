@@ -14,9 +14,12 @@ namespace button
         void init(uint8_t pin);
         void update();
         void setCallback(EventCallback cb);
+        void setCallbackToBuiltInButton(EventCallback cb);
 
     private:
         std::optional<EasyButton> button_;
+        std::optional<EasyButton> builtInButton_;
         EventCallback callback_ = nullptr;
+        EventCallback callbackToBuiltIn_ = nullptr;
     };
 }

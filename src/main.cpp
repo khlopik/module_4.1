@@ -12,15 +12,17 @@ namespace
   led::LedHandler ledHandler;
   encoder::Encoder encoderHandler;
   uart::UartHandler uartHandler;
+  bool isRGBLedOn = false;
 
-  void onEspCommand(uart::Command cmd)
+  void onEspCommand(uart::RxCommand cmd)
   {
+    Serial.println("== onEspCommand ==");
     switch (cmd)
     {
-    case uart::Command::ButtonPress:
+    case uart::RxCommand::ButtonPress:
       ledHandler.turnOnBuiltInLed();
       break;
-    case uart::Command::ButtonRelease:
+    case uart::RxCommand::ButtonRelease:
       ledHandler.turnOffBuiltInLed();
       break;
     default:
@@ -30,25 +32,44 @@ namespace
 
   void onEncoderUpdate(uint8_t value)
   {
+    Serial.println("== onEncoderUpdate ==");
     uart::TxCommand commandToSend;
 
     switch (ledHandler.getCurrentColor())
     {
     case led::Color::Red:
-      commandToSend.type = uart::Type::R;
+      commandToSend.type = uart::CommandType::R;
       break;
     case led::Color::Green:
-      commandToSend.type = uart::Type::G;
+      commandToSend.type = uart::CommandType::G;
       break;
     case led::Color::Blue:
-      commandToSend.type = uart::Type::B;
+      commandToSend.type = uart::CommandType::B;
       break;
     default:
-      commandToSend.type = uart::Type::Unknown;
+      commandToSend.type = uart::CommandType::Unknown;
       break;
     }
 
     commandToSend.value = value;
+    uartHandler.sendCommandToQueue(commandToSend);
+  }
+
+  void onBuiltInButtonClick()
+  {
+    Serial.println("== onBuiltInButtonClick ==");
+    uart::TxCommand commandToSend;
+    commandToSend.value = 1;
+    if (isRGBLedOn)
+    {
+      commandToSend.type = uart::CommandType::OFF;
+      isRGBLedOn = false;
+    }
+    else
+    {
+      commandToSend.type = uart::CommandType::ON;
+      isRGBLedOn = true;
+    }
     uartHandler.sendCommandToQueue(commandToSend);
   }
 }
@@ -59,6 +80,7 @@ void setup()
   buttonHandler.init(buttonConfig::pin);
   buttonHandler.setCallback([]()
                             { ledHandler.switchColor(); });
+  buttonHandler.setCallbackToBuiltInButton(onBuiltInButtonClick);
   encoderHandler.init(encoderConfig::clkPin, encoderConfig::dtPin);
   encoderHandler.setCallback(&onEncoderUpdate);
   uartHandler.init(uartConfig::rxPin, uartConfig::txPin);

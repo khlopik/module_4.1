@@ -7,7 +7,9 @@ namespace button
     void ButtonHandler::init(uint8_t pin)
     {
         button_.emplace(pin);
+        builtInButton_.emplace(buttonConfig::builtInPin);
         button_->begin();
+        builtInButton_->begin();
     }
 
     void ButtonHandler::setCallback(EventCallback cb)
@@ -21,13 +23,27 @@ namespace button
         button_->onPressed(callback_);
     }
 
-    void ButtonHandler::update()
+    void ButtonHandler::setCallbackToBuiltInButton(EventCallback cb)
     {
-        if (!button_)
+        if (!builtInButton_)
         {
             return;
         }
 
-        button_->read();
+        callbackToBuiltIn_ = cb;
+        builtInButton_->onPressed(callbackToBuiltIn_);
+    }
+
+    void ButtonHandler::update()
+    {
+        if (button_)
+        {
+            button_->read();
+        }
+
+        if (builtInButton_)
+        {
+            builtInButton_->read();
+        }
     }
 }

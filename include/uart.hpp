@@ -8,16 +8,16 @@
 
 namespace uart
 {
-    enum class Command
+    enum class RxCommand
     {
         ButtonPress,
         ButtonRelease,
         Unknown,
     };
 
-    using CommandCallback = void (*)(Command);
+    using CommandCallback = void (*)(RxCommand);
 
-    enum class Type
+    enum class CommandType
     {
         ON,
         OFF,
@@ -29,7 +29,7 @@ namespace uart
 
     struct TxCommand
     {
-        Type type;
+        CommandType type;
         uint8_t value;
     };
 
@@ -45,7 +45,7 @@ namespace uart
     private:
         void checkMessagesLoop();
         void sendMessagesLoop();
-        Command parseCommand(const char *str);
+        RxCommand parseCommand(const char *str);
 
         std::optional<Uart> SerialVCP_;
 
